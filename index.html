@@ -1,0 +1,1786 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Qorino Green — One Platform for Biotechnology, Agriculture, Climate & Forests</title>
+<meta name="description" content="Qorino Green is a unified platform connecting biotechnology, agriculture, genetic engineering, climate & disaster protection, afforestation and anti-deforestation. Founded October 2026." />
+
+<!-- ============================================================
+     FAVICON (Q + leaf)
+     ============================================================ -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2304231A'/%3E%3Ccircle cx='30' cy='27' r='15' fill='none' stroke='%237ED957' stroke-width='5'/%3E%3Cpath d='M46 44c4-6 13-6 16 0-3 6-12 6-16 0z' fill='%23A8E063' transform='rotate(45 46 44)'/%3E%3C/svg%3E" />
+
+<!-- ============================================================
+     FONTS  (Fraunces = display / Outfit = body / JetBrains Mono = data)
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Chart.js (analytics) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<style>
+/* ============================================================
+   1. DESIGN TOKENS
+   ============================================================ */
+:root{
+  --ink:#04231A;
+  --bg-deep:#04231A;
+  --bg-soft:#062B20;
+  --green-deep:#0B3D2E;
+  --green:#1E8F6E;
+  --mint:#2ECC71;
+  --leaf:#7ED957;
+  --lime:#A8E063;
+
+  --text:#EAF6EC;
+  --muted:#9FC2AE;
+  --line:rgba(168,224,99,.16);
+  --line-strong:rgba(168,224,99,.32);
+  --card:rgba(255,255,255,.045);
+  --card-hover:rgba(255,255,255,.075);
+
+  --warn:#F2B441;
+  --danger:#E4715B;
+
+  --radius:20px;
+  --radius-sm:13px;
+  --shadow:0 18px 48px rgba(0,0,0,.42);
+  --max:1240px;
+
+  --font-display:'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body:'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:'JetBrains Mono', ui-monospace, 'Courier New', monospace;
+}
+
+/* ============================================================
+   2. RESET + BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+
+body{
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.65;
+  color:var(--text);
+  background-color:var(--bg-deep);
+  background-image:
+    radial-gradient(1200px 820px at 10% -12%, rgba(46,204,113,.20), transparent 62%),
+    radial-gradient(900px 700px at 96% 2%, rgba(168,224,99,.12), transparent 58%),
+    radial-gradient(1100px 900px at 50% 112%, rgba(30,143,110,.22), transparent 62%);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+ul{list-style:none}
+
+h1,h2,h3,h4{
+  font-family:var(--font-display);
+  font-weight:600;
+  line-height:1.06;
+  letter-spacing:-.02em;
+}
+
+::selection{background:var(--leaf);color:var(--ink)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:11px}
+::-webkit-scrollbar-track{background:#052016}
+::-webkit-scrollbar-thumb{background:#1B6F57;border-radius:99px;border:3px solid #052016}
+::-webkit-scrollbar-thumb:hover{background:#2ECC71}
+
+/* ============================================================
+   3. LAYOUT HELPERS
+   ============================================================ */
+.wrap{max-width:var(--max);margin-inline:auto;padding-inline:24px}
+.section{padding:88px 0}
+.section--tight{padding:60px 0}
+
+.sec-head{max-width:760px;margin-bottom:46px}
+.sec-head h2{font-size:clamp(1.9rem,3.6vw,2.9rem);margin-bottom:16px}
+.sec-head p{color:var(--muted);font-size:1.03rem}
+
+.eyebrow{
+  display:flex;align-items:center;gap:11px;
+  font-family:var(--font-mono);
+  font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--lime);margin-bottom:16px;
+}
+.eyebrow::before{content:'';width:30px;height:1px;background:var(--lime);flex:none}
+
+.grad-text{
+  background:linear-gradient(115deg,var(--lime),var(--mint) 55%,#6EE7B7);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+
+/* ============================================================
+   4. BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:13px 26px;border-radius:999px;border:1px solid transparent;
+  font-size:.95rem;font-weight:600;cursor:pointer;
+  transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
+  white-space:nowrap;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--leaf),var(--mint));
+  color:#032019;
+  box-shadow:0 10px 30px rgba(126,217,87,.26);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(126,217,87,.38)}
+.btn-ghost{
+  border-color:var(--line-strong);color:var(--text);
+  background:rgba(255,255,255,.03);
+}
+.btn-ghost:hover{background:rgba(255,255,255,.08);border-color:var(--leaf);transform:translateY(-2px)}
+.btn-sm{padding:10px 18px;font-size:.86rem}
+
+/* ============================================================
+   5. NAVIGATION
+   ============================================================ */
+.nav{
+  position:sticky;top:0;z-index:60;
+  background:rgba(4,35,26,.76);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{
+  max-width:var(--max);margin-inline:auto;padding:0 24px;
+  height:74px;display:flex;align-items:center;gap:28px;
+}
+
+/* --- Logo --- */
+.logo{display:flex;align-items:center;gap:11px;flex:none}
+.logo-mark{width:40px;height:40px;flex:none;transition:transform .4s ease}
+.logo:hover .logo-mark{transform:rotate(-8deg) scale(1.06)}
+.logo-text{display:flex;flex-direction:column;line-height:1}
+.logo-name{font-family:var(--font-display);font-size:1.32rem;font-weight:600;letter-spacing:-.02em}
+.logo-sub{
+  font-family:var(--font-mono);font-size:.6rem;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--lime);margin-top:3px;
+}
+
+.nav-links{display:flex;align-items:center;gap:4px;margin-left:auto}
+.nav-links a{
+  padding:9px 14px;border-radius:999px;font-size:.9rem;color:var(--muted);
+  transition:color .2s, background .2s;
+}
+.nav-links a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.nav-cta{margin-left:10px}
+
+/* ============================================================
+   6. HERO
+   ============================================================ */
+.hero{padding:72px 0 34px;position:relative}
+.hero-grid{
+  display:grid;grid-template-columns:1.06fr .94fr;
+  gap:60px;align-items:center;
+}
+
+.badge{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:7px 15px;border-radius:999px;
+  border:1px solid var(--line-strong);
+  background:rgba(168,224,99,.08);
+  font-family:var(--font-mono);font-size:.7rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--lime);
+  margin-bottom:24px;
+}
+.dot-live{
+  width:7px;height:7px;border-radius:50%;background:var(--leaf);
+  box-shadow:0 0 0 0 rgba(126,217,87,.7);
+  animation:pulse 2.2s infinite;
+}
+@keyframes pulse{
+  70%{box-shadow:0 0 0 9px rgba(126,217,87,0)}
+  100%{box-shadow:0 0 0 0 rgba(126,217,87,0)}
+}
+
+.hero h1{
+  font-size:clamp(2.35rem,5vw,4rem);
+  margin-bottom:22px;letter-spacing:-.03em;
+}
+.hero-lead{
+  font-size:1.08rem;color:var(--muted);
+  max-width:56ch;margin-bottom:32px;
+}
+.hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:44px}
+
+/* --- Hero stat strip --- */
+.stat-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:16px;overflow:hidden;
+}
+.stat{background:rgba(4,35,26,.72);padding:18px 16px}
+.stat-num{
+  font-family:var(--font-display);font-size:1.5rem;font-weight:600;
+  color:var(--text);display:block;line-height:1.1;
+}
+.stat-num .unit{font-size:.82rem;color:var(--lime);font-family:var(--font-mono);font-weight:500}
+.stat-label{
+  font-size:.72rem;color:var(--muted);margin-top:6px;display:block;
+  letter-spacing:.03em;text-transform:uppercase;font-family:var(--font-mono);
+}
+
+/* --- Hero visual --- */
+.hero-visual{position:relative}
+.visual-frame{
+  position:relative;border-radius:28px;overflow:hidden;
+  border:1px solid var(--line-strong);
+  box-shadow:var(--shadow);
+  aspect-ratio:4/4.6;
+  background:#08382A;
+}
+.visual-svg{width:100%;height:100%;object-fit:cover}
+
+.float-card{
+  position:absolute;
+  background:rgba(6,43,32,.82);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--line-strong);
+  border-radius:15px;padding:12px 16px;
+  box-shadow:0 12px 32px rgba(0,0,0,.4);
+  animation:floaty 6s ease-in-out infinite;
+}
+.fc-1{top:26px;left:-22px}
+.fc-2{bottom:34px;right:-18px;animation-delay:-3s}
+.fc-label{
+  display:block;font-family:var(--font-mono);font-size:.62rem;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
+}
+.fc-val{
+  display:block;font-family:var(--font-display);font-size:1.24rem;
+  font-weight:600;color:var(--leaf);margin-top:2px;
+}
+@keyframes floaty{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+
+/* ============================================================
+   7. ABOUT / FOCUS PILLARS
+   ============================================================ */
+.pillar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pillar{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:30px 26px;
+  transition:transform .3s ease, background .3s ease, border-color .3s ease;
+  position:relative;overflow:hidden;
+}
+.pillar::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(360px 180px at 0% 0%, rgba(126,217,87,.12), transparent 70%);
+  opacity:0;transition:opacity .35s;
+}
+.pillar:hover{transform:translateY(-5px);background:var(--card-hover);border-color:var(--line-strong)}
+.pillar:hover::after{opacity:1}
+.pillar-num{
+  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.2em;
+  color:var(--lime);margin-bottom:18px;display:block;
+}
+.pillar h3{font-size:1.35rem;margin-bottom:12px}
+.pillar p{color:var(--muted);font-size:.95rem}
+
+/* ============================================================
+   8. SECTOR TABS
+   ============================================================ */
+.sector-tabs{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px}
+.tab{
+  padding:10px 20px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.035);
+  color:var(--muted);font-size:.88rem;font-weight:500;
+  transition:all .25s ease;
+}
+.tab:hover{color:var(--text);border-color:var(--line-strong);background:rgba(255,255,255,.07)}
+.tab.active{
+  background:linear-gradient(135deg,var(--leaf),var(--mint));
+  color:#032019;border-color:transparent;font-weight:600;
+  box-shadow:0 8px 24px rgba(126,217,87,.26);
+}
+
+.panel{display:none}
+.panel.active{display:block;animation:fadeUp .45s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.panel-head{
+  display:flex;align-items:flex-start;gap:18px;
+  padding:26px 28px;border-radius:var(--radius);
+  background:linear-gradient(120deg, rgba(30,143,110,.22), rgba(126,217,87,.08));
+  border:1px solid var(--line-strong);
+  margin-bottom:20px;
+}
+.panel-icon{
+  width:52px;height:52px;flex:none;border-radius:14px;
+  display:grid;place-items:center;
+  background:rgba(4,35,26,.6);border:1px solid var(--line-strong);
+  font-size:1.5rem;
+}
+.panel-head h3{font-size:1.55rem;margin-bottom:6px}
+.panel-head p{color:var(--muted);font-size:.95rem}
+
+.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+.block{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius-sm);padding:24px;
+  border-left:3px solid var(--line-strong);
+}
+.block h4{
+  font-family:var(--font-mono);font-size:.72rem;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.block p{color:var(--muted);font-size:.94rem}
+.block ul{display:flex;flex-direction:column;gap:9px}
+.block ul li{
+  color:var(--muted);font-size:.92rem;
+  padding-left:19px;position:relative;
+}
+.block ul li::before{
+  content:'';position:absolute;left:0;top:.62em;
+  width:6px;height:6px;border-radius:50%;background:var(--leaf);
+}
+
+.block--problem{border-left-color:var(--danger)}
+.block--problem h4{color:var(--danger)}
+.block--challenge{border-left-color:var(--warn)}
+.block--challenge h4{color:var(--warn)}
+.block--solution{border-left-color:var(--leaf)}
+.block--solution h4{color:var(--leaf)}
+.block--tech{border-left-color:#4FD1C5}
+.block--tech h4{color:#4FD1C5}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chips li{
+  padding:6px 13px;border-radius:999px;
+  border:1px solid rgba(79,209,197,.32);
+  background:rgba(79,209,197,.08);
+  font-size:.79rem;color:#9FE8DF;
+  padding-left:13px;
+}
+.chips li::before{display:none}
+
+/* ============================================================
+   9. ANALYTICS / CHARTS
+   ============================================================ */
+.chart-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.chart-card{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:24px;
+  transition:border-color .3s, background .3s;
+}
+.chart-card:hover{border-color:var(--line-strong);background:var(--card-hover)}
+.chart-card h3{font-size:1.1rem;margin-bottom:4px}
+.chart-card .chart-sub{
+  font-size:.8rem;color:var(--muted);margin-bottom:18px;
+  font-family:var(--font-mono);letter-spacing:.03em;
+}
+.chart-box{position:relative;height:310px}
+.chart-fallback{
+  display:none;height:100%;place-items:center;text-align:center;
+  color:var(--muted);font-size:.9rem;padding:20px;
+}
+
+/* ============================================================
+   10. INSIGHTS / ARTICLES
+   ============================================================ */
+.article-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.article{
+  display:flex;flex-direction:column;
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);overflow:hidden;
+  transition:transform .3s ease, border-color .3s ease, background .3s ease;
+}
+.article:hover{transform:translateY(-6px);border-color:var(--line-strong);background:var(--card-hover)}
+
+/* Replace .article-media background with a real <img> when you have photos */
+.article-media{
+  aspect-ratio:16/10;position:relative;overflow:hidden;
+  background:linear-gradient(150deg,#0E5C41,#0B3D2E 55%,#062B20);
+}
+.article-media::after{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(220px 140px at 78% 18%, rgba(168,224,99,.42), transparent 68%),
+    radial-gradient(180px 120px at 18% 88%, rgba(46,204,113,.34), transparent 70%);
+}
+.article-media svg{position:absolute;inset:0;width:100%;height:100%;opacity:.9}
+.article-tag{
+  position:absolute;top:12px;left:12px;z-index:2;
+  padding:5px 11px;border-radius:999px;
+  background:rgba(4,35,26,.78);backdrop-filter:blur(8px);
+  border:1px solid var(--line-strong);
+  font-family:var(--font-mono);font-size:.62rem;
+  letter-spacing:.11em;text-transform:uppercase;color:var(--lime);
+}
+.article-body{padding:20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.article-body h3{font-size:1.02rem;line-height:1.3}
+.article-body p{font-size:.86rem;color:var(--muted);flex:1}
+.article-meta{
+  font-family:var(--font-mono);font-size:.68rem;
+  letter-spacing:.08em;color:#7FA894;text-transform:uppercase;
+  display:flex;gap:10px;align-items:center;
+  padding-top:12px;border-top:1px solid var(--line);
+}
+
+/* ============================================================
+   11. TARGETS / ROADMAP
+   ============================================================ */
+.target-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:56px}
+.target{
+  background:linear-gradient(150deg, rgba(30,143,110,.16), rgba(255,255,255,.03));
+  border:1px solid var(--line);border-radius:var(--radius);
+  padding:26px 24px;
+}
+.target-num{
+  font-family:var(--font-display);font-size:2.1rem;font-weight:600;
+  color:var(--leaf);line-height:1;margin-bottom:10px;
+}
+.target h4{font-size:.98rem;margin-bottom:6px}
+.target p{font-size:.84rem;color:var(--muted)}
+
+.timeline{position:relative;padding-left:34px}
+.timeline::before{
+  content:'';position:absolute;left:9px;top:6px;bottom:6px;width:2px;
+  background:linear-gradient(180deg,var(--leaf),rgba(126,217,87,.06));
+}
+.tl-item{position:relative;padding-bottom:34px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{
+  content:'';position:absolute;left:-31px;top:6px;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--bg-deep);border:2px solid var(--leaf);
+  box-shadow:0 0 0 4px rgba(126,217,87,.13);
+}
+.tl-item.is-future::before{border-color:#3E7A64;box-shadow:none}
+.tl-date{
+  font-family:var(--font-mono);font-size:.7rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--lime);margin-bottom:6px;
+}
+.tl-item h4{font-size:1.12rem;margin-bottom:6px}
+.tl-item p{font-size:.9rem;color:var(--muted);max-width:70ch}
+
+/* ============================================================
+   12. SUBMIT PROJECT FORM
+   ============================================================ */
+.submit-wrap{
+  display:grid;grid-template-columns:.85fr 1.15fr;gap:44px;
+  background:
+    radial-gradient(700px 400px at 0% 0%, rgba(46,204,113,.14), transparent 65%),
+    var(--card);
+  border:1px solid var(--line-strong);
+  border-radius:26px;padding:44px;
+}
+.submit-aside h2{font-size:clamp(1.7rem,3vw,2.3rem);margin-bottom:16px}
+.submit-aside p{color:var(--muted);font-size:.96rem;margin-bottom:24px}
+.submit-list{display:flex;flex-direction:column;gap:14px}
+.submit-list li{
+  display:flex;gap:12px;align-items:flex-start;
+  font-size:.9rem;color:var(--muted);
+}
+.submit-list .tick{
+  width:22px;height:22px;flex:none;border-radius:50%;
+  display:grid;place-items:center;
+  background:rgba(126,217,87,.16);color:var(--leaf);
+  font-size:.72rem;font-weight:700;
+}
+
+.form{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1 / -1}
+.field label{
+  font-family:var(--font-mono);font-size:.68rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+}
+.field input,.field select,.field textarea{
+  width:100%;padding:13px 15px;
+  border-radius:12px;border:1px solid rgba(168,224,99,.2);
+  background:rgba(0,0,0,.24);color:var(--text);
+  font-family:inherit;font-size:.93rem;
+  outline:none;transition:border-color .2s, box-shadow .2s, background .2s;
+}
+.field textarea{resize:vertical;min-height:112px}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--leaf);
+  box-shadow:0 0 0 3px rgba(126,217,87,.16);
+  background:rgba(0,0,0,.34);
+}
+.field input::placeholder,.field textarea::placeholder{color:#5F8574}
+.field select option{background:#062B20;color:var(--text)}
+
+.checkline{
+  grid-column:1 / -1;display:flex;gap:11px;align-items:flex-start;
+  font-size:.83rem;color:var(--muted);
+}
+.checkline input{width:17px;height:17px;accent-color:var(--mint);margin-top:3px;flex:none}
+
+.form .btn{grid-column:1 / -1;justify-self:start;margin-top:6px}
+
+.form-success{
+  display:none;text-align:center;padding:44px 24px;
+  border:1px solid var(--line-strong);border-radius:var(--radius);
+  background:rgba(126,217,87,.07);
+}
+.form-success .big{font-size:2.4rem;margin-bottom:14px}
+.form-success h3{font-size:1.5rem;margin-bottom:10px}
+.form-success p{color:var(--muted);font-size:.94rem;margin-bottom:8px}
+.ref-id{
+  display:inline-block;margin:14px 0 22px;padding:9px 20px;
+  border-radius:999px;border:1px dashed var(--line-strong);
+  font-family:var(--font-mono);letter-spacing:.14em;
+  color:var(--leaf);font-size:.9rem;
+}
+
+/* ============================================================
+   13. FOOTER
+   ============================================================ */
+.footer{
+  border-top:1px solid var(--line);
+  padding:64px 0 30px;margin-top:40px;
+  background:rgba(3,26,19,.6);
+}
+.footer-grid{
+  display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;
+  gap:40px;margin-bottom:48px;
+}
+.footer h5{
+  font-family:var(--font-mono);font-size:.7rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--lime);margin-bottom:16px;font-weight:600;
+}
+.footer ul{display:flex;flex-direction:column;gap:10px}
+.footer ul a{font-size:.88rem;color:var(--muted);transition:color .2s}
+.footer ul a:hover{color:var(--leaf)}
+.footer-brand p{color:var(--muted);font-size:.9rem;margin-top:18px;max-width:34ch}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:20px;flex-wrap:wrap;
+  padding-top:26px;border-top:1px solid var(--line);
+  font-size:.8rem;color:#7FA894;
+}
+.footer-bottom .mono{font-family:var(--font-mono);letter-spacing:.06em;font-size:.72rem}
+
+/* ============================================================
+   14. RESPONSIVE
+   ============================================================ */
+@media (max-width:1080px){
+  .hero-grid{grid-template-columns:1fr;gap:48px}
+  .hero-visual{max-width:520px;margin-inline:auto;width:100%}
+  .fc-1{left:-10px}
+  .fc-2{right:-6px}
+  .article-grid{grid-template-columns:repeat(2,1fr)}
+  .submit-wrap{grid-template-columns:1fr;padding:34px 26px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+
+@media (max-width:900px){
+  .nav-links{display:none}
+  .nav-cta{margin-left:auto}
+  .pillar-grid{grid-template-columns:1fr}
+  .chart-grid{grid-template-columns:1fr}
+  .target-grid{grid-template-columns:1fr 1fr}
+  .panel-grid{grid-template-columns:1fr}
+  .stat-strip{grid-template-columns:1fr 1fr}
+}
+
+@media (max-width:640px){
+  .section{padding:62px 0}
+  .hero{padding:44px 0 20px}
+  .wrap{padding-inline:18px}
+  .article-grid{grid-template-columns:1fr}
+  .target-grid{grid-template-columns:1fr}
+  .form{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .float-card{display:none}
+  .hero-actions .btn{width:100%}
+  .visual-frame{aspect-ratio:1/1}
+  .panel-head{flex-direction:column;gap:14px}
+  .chart-box{height:270px}
+}
+
+/* ============================================================
+   15. MOTION PREFERENCES
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     NAVIGATION
+     ============================================================ -->
+<header class="nav">
+  <div class="nav-inner">
+
+    <a href="#top" class="logo" aria-label="Qorino Green home">
+      <!-- Q + leaf mark -->
+      <svg class="logo-mark" viewBox="0 0 64 64" role="img" aria-label="Qorino Green logo">
+        <defs>
+          <linearGradient id="qgrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#A8E063"/>
+            <stop offset="1" stop-color="#2ECC71"/>
+          </linearGradient>
+        </defs>
+        <!-- Q ring -->
+        <circle cx="30" cy="28" r="17" fill="none" stroke="url(#qgrad)" stroke-width="6"/>
+        <!-- leaf tail -->
+        <g transform="translate(44 42) rotate(45)">
+          <path d="M0 0 C 5 -7 15 -7 19 0 C 15 7 5 7 0 0 Z" fill="url(#qgrad)"/>
+          <path d="M3 0 L15 0" stroke="#04231A" stroke-width="1.5" stroke-linecap="round" opacity=".65"/>
+        </g>
+      </svg>
+      <span class="logo-text">
+        <span class="logo-name">Qorino</span>
+        <span class="logo-sub">Green</span>
+      </span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="#about">About</a>
+      <a href="#sectors">Sectors</a>
+      <a href="#analytics">Analytics</a>
+      <a href="#insights">Insights</a>
+      <a href="#targets">Targets</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <a href="#submit" class="btn btn-primary btn-sm nav-cta">Submit a Project</a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+
+      <div class="hero-copy">
+        <span class="badge"><span class="dot-live"></span> Founded October 2026</span>
+
+        <h1>
+          Six sectors.<br>
+          One living <span class="grad-text">platform</span>.
+        </h1>
+
+        <p class="hero-lead">
+          Qorino Green connects biotechnology, agriculture, genetic engineering,
+          climate &amp; disaster protection, afforestation and anti-deforestation
+          into a single operating system — where problems are mapped, technologies
+          are matched, and projects are funded on verified outcomes.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#sectors" class="btn btn-primary">Explore the Sectors →</a>
+          <a href="#submit" class="btn btn-ghost">Bring us your project</a>
+        </div>
+
+        <div class="stat-strip">
+          <div class="stat">
+            <span class="stat-num" data-count="6">0</span>
+            <span class="stat-label">Sectors</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num" data-count="25000" data-suffix=" ha">0</span>
+            <span class="stat-label">Restoration target 2031</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num" data-count="2" data-suffix="M">0</span>
+            <span class="stat-label">People under early warning</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">Oct<span class="unit"> 2026</span></span>
+            <span class="stat-label">Founded</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Illustrated landscape "photo" — swap for a real <img> when ready -->
+      <div class="hero-visual">
+        <div class="visual-frame">
+          <svg class="visual-svg" viewBox="0 0 400 460" preserveAspectRatio="xMidYMid slice" aria-label="Illustrated landscape with hills and trees" role="img">
+            <defs>
+              <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#0F6B4F"/>
+                <stop offset="1" stop-color="#08382A"/>
+              </linearGradient>
+              <radialGradient id="sunG" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0" stop-color="#E9FFB0" stop-opacity=".85"/>
+                <stop offset="1" stop-color="#A8E063" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+
+            <rect width="400" height="460" fill="url(#sky)"/>
+            <circle cx="300" cy="112" r="96" fill="url(#sunG)"/>
+            <circle cx="300" cy="112" r="40" fill="#D9F99D" opacity=".92"/>
+
+            <path d="M0,272 C70,232 132,258 202,236 C272,214 332,246 400,224 L400,460 L0,460 Z" fill="#12684C"/>
+            <path d="M0,322 C82,286 152,312 226,292 C302,272 352,302 400,286 L400,460 L0,460 Z" fill="#0C4E3A"/>
+            <path d="M0,372 C92,342 172,362 252,346 C322,332 372,354 400,344 L400,460 L0,460 Z" fill="#083A2C"/>
+
+            <g fill="#0A4A37">
+              <path d="M70 356 l11 -27 l11 27 z"/>
+              <path d="M96 360 l9 -22 l9 22 z"/>
+              <path d="M298 344 l12 -29 l12 29 z"/>
+              <path d="M326 350 l10 -24 l10 24 z"/>
+              <path d="M186 350 l10 -24 l10 24 z"/>
+            </g>
+
+            <path d="M0,416 C112,392 212,412 302,398 C352,391 382,402 400,396 L400,460 L0,460 Z" fill="#052A1F"/>
+          </svg>
+        </div>
+
+        <div class="float-card fc-1">
+          <span class="fc-label">2030 target</span>
+          <span class="fc-val">1.2M tCO₂e</span>
+        </div>
+        <div class="float-card fc-2">
+          <span class="fc-label">Hectares monitored</span>
+          <span class="fc-val">84,500 ha</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ABOUT / FOCUS
+     ============================================================ -->
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Who we are</span>
+      <h2>A company built to connect what has always been <span class="grad-text">kept apart</span>.</h2>
+      <p>
+        Qorino Green was founded in October 2026 on a simple observation: the climate,
+        food and biodiversity crises are one crisis wearing six different masks. Labs,
+        farms, forests and emergency agencies each hold a piece of the answer — but they
+        rarely share a language. We build the layer that lets them.
+      </p>
+    </div>
+
+    <div class="pillar-grid">
+      <article class="pillar">
+        <span class="pillar-num">01 — MEASURE</span>
+        <h3>Ground truth first</h3>
+        <p>
+          Satellite imagery, drone surveys, soil labs, bioacoustic sensors and community
+          rangers feed one verified data layer. No claim leaves the platform without
+          an evidence trail behind it.
+        </p>
+      </article>
+
+      <article class="pillar">
+        <span class="pillar-num">02 — MODEL</span>
+        <h3>Risk &amp; impact modelling</h3>
+        <p>
+          Cross-sector models connect a gene-edited variety to a drought forecast, or a
+          flood warning to an insurance payout. Every sector improves the others'
+          predictions.
+        </p>
+      </article>
+
+      <article class="pillar">
+        <span class="pillar-num">03 — MOBILISE</span>
+        <h3>Capital and people</h3>
+        <p>
+          Projects are matched with funders, machinery, technical partners and policy
+          pathways — released in stages, tied to measured outcomes, not promises.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTORS — PROBLEM / CHALLENGES / SOLUTION / TECH
+     ============================================================ -->
+<section class="section" id="sectors">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The six sectors</span>
+      <h2>Every sector has a problem, a set of challenges, and a <span class="grad-text">way through</span>.</h2>
+      <p>Select a sector to see the problem we are attacking, the challenges in the way, our proposed solution, and the machinery and technologies we deploy.</p>
+    </div>
+
+    <div class="sector-tabs" role="tablist">
+      <button class="tab active" data-sector="bio"      role="tab" aria-selected="true">Biotechnology</button>
+      <button class="tab"        data-sector="agri"     role="tab" aria-selected="false">Agriculture</button>
+      <button class="tab"        data-sector="genetic"  role="tab" aria-selected="false">Genetic Engineering</button>
+      <button class="tab"        data-sector="climate"  role="tab" aria-selected="false">Climate &amp; Disaster</button>
+      <button class="tab"        data-sector="afforest" role="tab" aria-selected="false">Afforestation</button>
+      <button class="tab"        data-sector="deforest" role="tab" aria-selected="false">Anti-Deforestation</button>
+    </div>
+
+    <!-- ---------- BIOTECH ---------- -->
+    <article class="panel active" id="sector-bio" role="tabpanel">
+      <div class="panel-head">
+        <div class="panel-icon">🧬</div>
+        <div>
+          <h3>Biotechnology</h3>
+          <p>Biological tools that replace chemistry — enzymes, microbes, bio-stimulants and bio-based materials.</p>
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="block block--problem">
+          <h4>Problem</h4>
+          <p>Biological solutions take years to travel from a lab bench to a farmer's field, and the cost per unit keeps bio-based inputs out of reach for the smallholders who need them most.</p>
+        </div>
+        <div class="block block--challenge">
+          <h4>Challenges</h4>
+          <ul>
+            <li>Scaling fermentation from 2 L to 20,000 L without losing yield</li>
+            <li>Slow, fragmented regulatory approval across countries</li>
+            <li>Biosafety and containment assurance for field trials</li>
+            <li>No shared reference data for soil microbiomes</li>
+          </ul>
+        </div>
+        <div class="block block--solution">
+          <h4>Our Solution</h4>
+          <p>A shared bio-foundry and distributed field-trial network with open protocols. Labs prototype on the platform, farmers host trials, and results — including failures — return to a public dataset that shortens the next product's path to market.</p>
+        </div>
+        <div class="block block--tech">
+          <h4>Machinery &amp; Technologies</h4>
+          <ul class="chips">
+            <li>Benchtop bioreactors</li>
+            <li>Soil metagenomic sequencers</li>
+            <li>IoT biosensors</li>
+            <li>AI protein-folding models</li>
+            <li>CRISPR screening kits</li>
+            <li>Microbiome reference libraries</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- ---------- AGRICULTURE ---------- -->
+    <article class="panel" id="sector-agri" role="tabpanel">
+      <div class="panel-head">
+        <div class="panel-icon">🌾</div>
+        <div>
+          <h3>Agriculture</h3>
+          <p>Precision, soil health and post-harvest systems that make every hectare produce more with less.</p>
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="block block--problem">
+          <h4>Problem</h4>
+          <p>Yields have plateaued while input costs and climate volatility climb. Farmers are asked to produce more food on degrading soil with less water — and with almost no reliable data about their own land.</p>
+        </div>
+        <div class="block block--challenge">
+          <h4>Challenges</h4>
+          <ul>
+            <li>Topsoil loss and falling organic carbon</li>
+            <li>Irrigation demand outstripping supply</li>
+            <li>Fragmented smallholder plots with no digital record</li>
+            <li>Post-harvest losses of 20–40% in many regions</li>
+          </ul>
+        </div>
+        <div class="block block--solution">
+          <h4>Our Solution</h4>
+          <p>A soil-health passport for every plot, combined with precision-agronomy advisories delivered through cooperatives. Farmers get input plans tuned to their own soil and weather; the platform gets the ground-truth data that makes every other sector's model sharper.</p>
+        </div>
+        <div class="block block--tech">
+          <h4>Machinery &amp; Technologies</h4>
+          <ul class="chips">
+            <li>Multispectral survey drones</li>
+            <li>Variable-rate seeders</li>
+            <li>Soil moisture probes</li>
+            <li>Autonomous mechanical weeders</li>
+            <li>Solar cold-chain units</li>
+            <li>Farm management platforms</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- ---------- GENETIC ENGINEERING ---------- -->
+    <article class="panel" id="sector-genetic" role="tabpanel">
+      <div class="panel-head">
+        <div class="panel-icon">🧪</div>
+        <div>
+          <h3>Genetic Engineering</h3>
+          <p>Climate-resilient traits — drought, heat, salinity and disease tolerance — developed faster and licensed fairly.</p>
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="block block--problem">
+          <h4>Problem</h4>
+          <p>Conventional breeding takes 8–12 years to deliver a new variety. Climate zones are shifting faster than that. The traits farmers need most are arriving after the climate they were bred for has already changed.</p>
+        </div>
+        <div class="block block--challenge">
+          <h4>Challenges</h4>
+          <ul>
+            <li>Long generation cycles in staple crops</li>
+            <li>Public trust and transparent stewardship</li>
+            <li>Concentrated IP ownership blocking small breeders</li>
+            <li>Uneven biosafety regulation between countries</li>
+          </ul>
+        </div>
+        <div class="block block--solution">
+          <h4>Our Solution</h4>
+          <p>Marker-assisted selection combined with gene editing in a speed-breeding pipeline, run with open stewardship records and a licensing model that guarantees smallholder and public-sector access to climate-resilient varieties.</p>
+        </div>
+        <div class="block block--tech">
+          <h4>Machinery &amp; Technologies</h4>
+          <ul class="chips">
+            <li>CRISPR-Cas12a editing platforms</li>
+            <li>SNP genotyping arrays</li>
+            <li>Phenotyping greenhouses</li>
+            <li>Speed-breeding pods</li>
+            <li>Bioinformatics trait pipelines</li>
+            <li>Seed provenance tracking</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- ---------- CLIMATE & DISASTER ---------- -->
+    <article class="panel" id="sector-climate" role="tabpanel">
+      <div class="panel-head">
+        <div class="panel-icon">🛰️</div>
+        <div>
+          <h3>Climate &amp; Disaster Protection</h3>
+          <p>Early warning, rapid assessment and financial protection for the communities hit first and hardest.</p>
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="block block--problem">
+          <h4>Problem</h4>
+          <p>Most communities receive minutes of warning before a flood, cyclone or wildfire — often not at all. Every event compounds the last one, and recovery finance arrives months after the damage.</p>
+        </div>
+        <div class="block block--challenge">
+          <h4>Challenges</h4>
+          <ul>
+            <li>Sparse ground sensor coverage in vulnerable regions</li>
+            <li>Warning systems that stop at the district office</li>
+            <li>No last-mile delivery in low-connectivity areas</li>
+            <li>Slow, loss-assessment-heavy insurance payouts</li>
+          </ul>
+        </div>
+        <div class="block block--solution">
+          <h4>Our Solution</h4>
+          <p>A multi-hazard early-warning layer — radar, satellite and community sensors feeding one model — paired with parametric micro-insurance that pays automatically when a measured threshold is crossed, and pre-agreed response playbooks for local agencies.</p>
+        </div>
+        <div class="block block--tech">
+          <h4>Machinery &amp; Technologies</h4>
+          <ul class="chips">
+            <li>Compact weather radar</li>
+            <li>IoT river &amp; rain gauges</li>
+            <li>Sentinel-1 SAR imagery</li>
+            <li>Flood &amp; drought forecast models</li>
+            <li>SMS / radio last-mile alerts</li>
+            <li>Drone damage assessment</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- ---------- AFFORESTATION ---------- -->
+    <article class="panel" id="sector-afforest" role="tabpanel">
+      <div class="panel-head">
+        <div class="panel-icon">🌳</div>
+        <div>
+          <h3>Afforestation</h3>
+          <p>Restoration measured in surviving trees, not planted saplings.</p>
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="block block--problem">
+          <h4>Problem</h4>
+          <p>Billions of trees are planted every year and a large share die within three years. Success is reported as saplings put in the ground, not forest standing a decade later — so failure stays invisible.</p>
+        </div>
+        <div class="block block--challenge">
+          <h4>Challenges</h4>
+          <ul>
+            <li>Species planted where they cannot survive</li>
+            <li>No funding for the 3–5 years of aftercare</li>
+            <li>Monitoring stops the day the project closes</li>
+            <li>Unclear land tenure on restoration sites</li>
+          </ul>
+        </div>
+        <div class="block block--solution">
+          <h4>Our Solution</h4>
+          <p>Survival-linked restoration: seed provenance tracking from locally adapted mother trees, drone-assisted seeding on terrain access, five-year aftercare written into every contract, and independent monitoring that verifies carbon and biodiversity outcomes before payment.</p>
+        </div>
+        <div class="block block--tech">
+          <h4>Machinery &amp; Technologies</h4>
+          <ul class="chips">
+            <li>Seed-dispersal drones</li>
+            <li>IoT-climate-controlled nurseries</li>
+            <li>LiDAR canopy scanners</li>
+            <li>Mycorrhizal soil inoculants</li>
+            <li>MRV / carbon verification platforms</li>
+            <li>Community ranger apps</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- ---------- ANTI-DEFORESTATION ---------- -->
+    <article class="panel" id="sector-deforest" role="tabpanel">
+      <div class="panel-head">
+        <div class="panel-icon">🛡️</div>
+        <div>
+          <h3>Anti-Deforestation</h3>
+          <p>Detect forest loss in days, trace it to a supply chain, and put the evidence in the hands of the people on the ground.</p>
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="block block--problem">
+          <h4>Problem</h4>
+          <p>Forest loss is typically confirmed months after it happens, by which time the timber has moved and the land has been converted. Very little of it is ever traced back to a specific buyer or commodity chain.</p>
+        </div>
+        <div class="block block--challenge">
+          <h4>Challenges</h4>
+          <ul>
+            <li>Persistent cloud cover defeating optical satellites</li>
+            <li>Illegal logging that never enters official records</li>
+            <li>Weak or paper-based commodity traceability</li>
+            <li>Communities producing data with no ownership of it</li>
+          </ul>
+        </div>
+        <div class="block block--solution">
+          <h4>Our Solution</h4>
+          <p>Near-real-time radar monitoring that works through cloud, paired with a trained community ranger network that verifies alerts on the ground, and a commodity traceability ledger so a deforestation alert can be linked to the shipment that followed it.</p>
+        </div>
+        <div class="block block--tech">
+          <h4>Machinery &amp; Technologies</h4>
+          <ul class="chips">
+            <li>Sentinel-1 SAR change detection</li>
+            <li>Acoustic logging sensors</li>
+            <li>Blockchain traceability ledger</li>
+            <li>Satellite-linked ranger apps</li>
+            <li>Bioacoustic biodiversity monitors</li>
+            <li>Watchtower camera networks</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     ANALYTICS
+     ============================================================ -->
+<section class="section" id="analytics">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Platform analytics</span>
+      <h2>What the numbers say — and where we are <span class="grad-text">pointing them</span>.</h2>
+      <p>Indicative platform modelling as of founding. Figures are internal planning estimates for 2026–2031 and are updated as real project data arrives.</p>
+    </div>
+
+    <div class="chart-grid">
+
+      <div class="chart-card">
+        <h3>Platform focus allocation</h3>
+        <p class="chart-sub">Share of platform resources by sector · 2026 baseline</p>
+        <div class="chart-box"><canvas id="chartFocus"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <h3>Projected projects onboarded by 2031</h3>
+        <p class="chart-sub">Cumulative active projects per sector</p>
+        <div class="chart-box"><canvas id="chartProjects"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <h3>Growth trajectory 2026 – 2031</h3>
+        <p class="chart-sub">Projects onboarded vs. hectares under restoration</p>
+        <div class="chart-box"><canvas id="chartGrowth"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <h3>Sector readiness index</h3>
+        <p class="chart-sub">Data, partners and deployable technology · score out of 100</p>
+        <div class="chart-box"><canvas id="chartRadar"></canvas></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     INSIGHTS / ARTICLES
+     ============================================================ -->
+<section class="section" id="insights">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Field notes</span>
+      <h2>Articles from the <span class="grad-text">ground</span>.</h2>
+      <p>Short, practical writing from the sectors we work in — what is failing, what is working, and what we are testing next.</p>
+    </div>
+
+    <div class="article-grid">
+
+      <a href="#submit" class="article">
+        <div class="article-media">
+          <span class="article-tag">Afforestation</span>
+          <svg viewBox="0 0 320 200" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0,150 C70,120 130,140 200,120 C260,104 300,124 320,116 L320,200 L0,200 Z" fill="#0A4534"/>
+            <path d="M0,172 C90,152 170,168 250,156 C290,150 310,158 320,154 L320,200 L0,200 Z" fill="#052A1F"/>
+            <g fill="#12684C">
+              <path d="M60 150 l9 -22 l9 22 z"/><path d="M84 154 l8 -18 l8 18 z"/>
+              <path d="M214 128 l10 -24 l10 24 z"/><path d="M240 134 l8 -19 l8 19 z"/>
+            </g>
+          </svg>
+        </div>
+        <div class="article-body">
+          <h3>Why survival rate, not sapling count, is the real restoration metric</h3>
+          <p>Planting numbers are easy to report and easy to fail. Here is the measurement we think should replace them.</p>
+          <div class="article-meta"><span>6 min read</span><span>·</span><span>Oct 2026</span></div>
+        </div>
+      </a>
+
+      <a href="#submit" class="article">
+        <div class="article-media">
+          <span class="article-tag">Biotechnology</span>
+          <svg viewBox="0 0 320 200" preserveAspectRatio="none" aria-hidden="true">
+            <g stroke="#7ED957" stroke-width="2.5" fill="none" opacity=".75">
+              <path d="M40,20 C100,70 100,130 40,180"/>
+              <path d="M90,20 C30,70 30,130 90,180"/>
+            </g>
+            <g stroke="#A8E063" stroke-width="2" opacity=".55">
+              <line x1="52" y1="60" x2="78" y2="60"/><line x1="46" y1="95" x2="84" y2="95"/>
+              <line x1="52" y1="130" x2="78" y2="130"/>
+            </g>
+            <circle cx="230" cy="100" r="46" fill="none" stroke="#2ECC71" stroke-width="2" opacity=".5"/>
+            <circle cx="230" cy="100" r="24" fill="#2ECC71" opacity=".22"/>
+          </svg>
+        </div>
+        <div class="article-body">
+          <h3>Bio-inputs need a shared foundry, not another private lab</h3>
+          <p>The bottleneck in biologicals is not discovery — it is the gap between a 2-litre flask and a 20,000-litre tank.</p>
+          <div class="article-meta"><span>5 min read</span><span>·</span><span>Oct 2026</span></div>
+        </div>
+      </a>
+
+      <a href="#submit" class="article">
+        <div class="article-media">
+          <span class="article-tag">Genetic Eng.</span>
+          <svg viewBox="0 0 320 200" preserveAspectRatio="none" aria-hidden="true">
+            <g stroke="#4FD1C5" stroke-width="2" fill="none" opacity=".7">
+              <path d="M60,40 L110,90 L60,140"/><path d="M110,40 L160,90 L110,140"/>
+              <path d="M160,40 L210,90 L160,140"/>
+            </g>
+            <circle cx="110" cy="90" r="7" fill="#A8E063"/>
+            <circle cx="210" cy="90" r="7" fill="#7ED957"/>
+            <circle cx="60" cy="40" r="5" fill="#2ECC71"/><circle cx="60" cy="140" r="5" fill="#2ECC71"/>
+            <circle cx="260" cy="90" r="26" fill="none" stroke="#A8E063" stroke-width="2" opacity=".55"/>
+          </svg>
+        </div>
+        <div class="article-body">
+          <h3>Gene-edited drought tolerance: the licensing question nobody asks</h3>
+          <p>We can build the trait. The harder problem is making sure a smallholder can actually afford the seed.</p>
+          <div class="article-meta"><span>7 min read</span><span>·</span><span>Nov 2026</span></div>
+        </div>
+      </a>
+
+      <a href="#submit" class="article">
+        <div class="article-media">
+          <span class="article-tag">Climate</span>
+          <svg viewBox="0 0 320 200" preserveAspectRatio="none" aria-hidden="true">
+            <circle cx="238" cy="60" r="34" fill="#A8E063" opacity=".35"/>
+            <path d="M0,140 C60,110 120,150 180,120 C240,92 290,126 320,110 L320,200 L0,200 Z" fill="#0A4534"/>
+            <path d="M0,166 C80,146 160,168 240,152 C280,144 306,158 320,152 L320,200 L0,200 Z" fill="#052A1F"/>
+            <g stroke="#7ED957" stroke-width="2" opacity=".6">
+              <path d="M40,40 q14,14 0,28"/><path d="M70,26 q14,14 0,28"/><path d="M100,40 q14,14 0,28"/>
+            </g>
+          </svg>
+        </div>
+        <div class="article-body">
+          <h3>The 12-minute warning: closing the last mile in disaster alerts</h3>
+          <p>A forecast is worthless if it stops at the district office. What we learned from community alert trials.</p>
+          <div class="article-meta"><span>8 min read</span><span>·</span><span>Nov 2026</span></div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TARGETS / ROADMAP
+     ============================================================ -->
+<section class="section" id="targets">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Our targets</span>
+      <h2>Founded in October 2026. <span class="grad-text">Measured by 2031.</span></h2>
+      <p>We publish our targets before we hit them, so they can be checked against us later.</p>
+    </div>
+
+    <div class="target-grid">
+      <div class="target">
+        <div class="target-num">25,000 ha</div>
+        <h4>Land under verified restoration</h4>
+        <p>Survival-verified forest and agroforestry cover by 2031 — not saplings planted.</p>
+      </div>
+      <div class="target">
+        <div class="target-num">2M</div>
+        <h4>People under early warning</h4>
+        <p>Covered by multi-hazard alerts delivered to the last mile by 2030.</p>
+      </div>
+      <div class="target">
+        <div class="target-num">1.2M t</div>
+        <h4>CO₂e verified and retired</h4>
+        <p>Independent, MRV-backed carbon removals issued through the platform by 2030.</p>
+      </div>
+      <div class="target">
+        <div class="target-num">50</div>
+        <h4>Climate-resilient varieties</h4>
+        <p>Licensed openly to smallholder and public-sector seed systems by 2029.</p>
+      </div>
+      <div class="target">
+        <div class="target-num">1,700</div>
+        <h4>Projects onboarded</h4>
+        <p>Active, funded projects across all six sectors by 2031.</p>
+      </div>
+      <div class="target">
+        <div class="target-num">10</div>
+        <h4>Countries operating</h4>
+        <p>With local partner networks, ranger teams and regulatory pathways.</p>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">October 2026</div>
+        <h4>Qorino Green is founded</h4>
+        <p>Platform alpha released with three pilot sectors live: agriculture, afforestation and anti-deforestation.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2027</div>
+        <h4>First 100 projects onboarded</h4>
+        <p>5,000 hectares enter restoration pipelines. Community ranger network launched in the first two regions.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2028</div>
+        <h4>Early warning at scale</h4>
+        <p>Multi-hazard alert layer reaches two million people, integrated with local emergency agencies and parametric insurance partners.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2029</div>
+        <h4>Trait pipeline delivers</h4>
+        <p>First 50 climate-resilient varieties released under open smallholder licensing through the genetic engineering programme.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2030</div>
+        <h4>Carbon and biodiversity verified</h4>
+        <p>1.2 million tonnes CO₂e independently verified and retired; biodiversity baselines published for every restoration site.</p>
+      </div>
+      <div class="tl-item is-future">
+        <div class="tl-date">2031</div>
+        <h4>Full six-sector operating system</h4>
+        <p>25,000 hectares restored, 1,700 active projects, operations in ten countries — one platform, all six sectors.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SUBMIT A PROJECT
+     ============================================================ -->
+<section class="section" id="submit">
+  <div class="wrap">
+    <div class="submit-wrap">
+
+      <div class="submit-aside">
+        <span class="eyebrow">Work with us</span>
+        <h2>Bring us your project.</h2>
+        <p>
+          If you are running work in any of our six sectors — a pilot, a research
+          programme, a restoration site, a sensor network, a breeding line — tell us
+          about it. We review every submission against the same four questions.
+        </p>
+        <ul class="submit-list">
+          <li><span class="tick">✓</span><span>Is the outcome measurable on the ground?</span></li>
+          <li><span class="tick">✓</span><span>Does it cross into a second sector?</span></li>
+          <li><span class="tick">✓</span><span>Is there a local partner who owns the work?</span></li>
+          <li><span class="tick">✓</span><span>Can it be verified independently?</span></li>
+        </ul>
+      </div>
+
+      <div>
+        <form class="form" id="projectForm" novalidate>
+          <div class="field">
+            <label for="pName">Your name</label>
+            <input id="pName" name="name" type="text" placeholder="Full name" required>
+          </div>
+
+          <div class="field">
+            <label for="pEmail">Email</label>
+            <input id="pEmail" name="email" type="email" placeholder="you@organisation.org" required>
+          </div>
+
+          <div class="field">
+            <label for="pOrg">Organisation</label>
+            <input id="pOrg" name="org" type="text" placeholder="Company / NGO / university / farm">
+          </div>
+
+          <div class="field">
+            <label for="pSector">Sector</label>
+            <select id="pSector" name="sector" required>
+              <option value="">Select a sector</option>
+              <option>Biotechnology</option>
+              <option>Agriculture</option>
+              <option>Genetic Engineering</option>
+              <option>Climate &amp; Disaster Protection</option>
+              <option>Afforestation</option>
+              <option>Anti-Deforestation</option>
+              <option>Cross-sector</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="pStage">Project stage</label>
+            <select id="pStage" name="stage">
+              <option>Idea / concept</option>
+              <option>Research</option>
+              <option>Pilot running</option>
+              <option>Scaling</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="pLocation">Location</label>
+            <input id="pLocation" name="location" type="text" placeholder="Country / region">
+          </div>
+
+          <div class="field full">
+            <label for="pTitle">Project title</label>
+            <input id="pTitle" name="title" type="text" placeholder="One line that describes the project" required>
+          </div>
+
+          <div class="field full">
+            <label for="pDesc">What does it do, and what would you need from us?</label>
+            <textarea id="pDesc" name="description" placeholder="Problem, approach, current results, and the support you are looking for (funding, technology, partners, verification)." required></textarea>
+          </div>
+
+          <div class="checkline">
+            <input type="checkbox" id="pConsent" required>
+            <label for="pConsent" style="font-family:inherit;text-transform:none;letter-spacing:0;font-size:.83rem;color:var(--muted);cursor:pointer">
+              I confirm the information is accurate and agree that Qorino Green may contact me about this submission.
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Submit project →</button>
+        </form>
+
+        <div class="form-success" id="formSuccess">
+          <div class="big">🌱</div>
+          <h3>Submission received</h3>
+          <p>Thank you. Our sector team reviews new projects every two weeks.</p>
+          <div class="ref-id" id="refId">QG-2026-00000</div>
+          <p style="font-size:.82rem">Keep this reference number for any follow-up.</p>
+          <button class="btn btn-ghost btn-sm" id="resetForm" style="margin-top:18px">Submit another project</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="footer" id="contact">
+  <div class="wrap">
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <a href="#top" class="logo">
+          <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true">
+            <circle cx="30" cy="28" r="17" fill="none" stroke="#7ED957" stroke-width="6"/>
+            <g transform="translate(44 42) rotate(45)">
+              <path d="M0 0 C 5 -7 15 -7 19 0 C 15 7 5 7 0 0 Z" fill="#A8E063"/>
+            </g>
+          </svg>
+          <span class="logo-text">
+            <span class="logo-name">Qorino</span>
+            <span class="logo-sub">Green</span>
+          </span>
+        </a>
+        <p>One platform for biotechnology, agriculture, genetic engineering, climate &amp; disaster protection, afforestation and anti-deforestation. Founded October 2026.</p>
+      </div>
+
+      <div>
+        <h5>Sectors</h5>
+        <ul>
+          <li><a href="#sectors">Biotechnology</a></li>
+          <li><a href="#sectors">Agriculture</a></li>
+          <li><a href="#sectors">Genetic Engineering</a></li>
+          <li><a href="#sectors">Climate &amp; Disaster</a></li>
+          <li><a href="#sectors">Afforestation</a></li>
+          <li><a href="#sectors">Anti-Deforestation</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5>Platform</h5>
+        <ul>
+          <li><a href="#about">About us</a></li>
+          <li><a href="#analytics">Analytics</a></li>
+          <li><a href="#insights">Field notes</a></li>
+          <li><a href="#targets">Targets</a></li>
+          <li><a href="#submit">Submit a project</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="mailto:hello@qorinogreen.com">hello@qorinogreen.com</a></li>
+          <li><a href="mailto:projects@qorinogreen.com">projects@qorinogreen.com</a></li>
+          <li><a href="#submit">Partner with us</a></li>
+          <li><a href="#submit">Request data access</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026–<span id="year">2026</span> Qorino Green. All rights reserved.</span>
+      <span class="mono">FOUNDED OCT 2026 · SIX SECTORS · ONE PLATFORM</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script>
+/* ------------------------------------------------------------
+   1. Current year
+   ------------------------------------------------------------ */
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ------------------------------------------------------------
+   2. Sector tabs
+   ------------------------------------------------------------ */
+const tabs   = document.querySelectorAll('.tab');
+const panels = document.querySelectorAll('.panel');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => {
+      t.classList.toggle('active', t === tab);
+      t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+    });
+    panels.forEach(p => {
+      p.classList.toggle('active', p.id === 'sector-' + tab.dataset.sector);
+    });
+  });
+});
+
+/* ------------------------------------------------------------
+   3. Animated hero counters
+   ------------------------------------------------------------ */
+const fmt = n => n.toLocaleString('en-US');
+
+const counters = document.querySelectorAll('[data-count]');
+const runCounter = el => {
+  const target = parseInt(el.dataset.count, 10);
+  const suffix = el.dataset.suffix || '';
+  const duration = 1400;
+  const start = performance.now();
+
+  const step = now => {
+    const p = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - p, 3);          // easeOutCubic
+    const val = Math.round(target * eased);
+    el.innerHTML = fmt(val) + (suffix ? `<span class="unit">${suffix}</span>` : '');
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+};
+
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { runCounter(e.target); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => io.observe(c));
+} else {
+  counters.forEach(runCounter);
+}
+
+/* ------------------------------------------------------------
+   4. Project submission form (client-side only)
+      → Replace the body of this handler with a fetch() to your API.
+   ------------------------------------------------------------ */
+const projectForm = document.getElementById('projectForm');
+const formSuccess = document.getElementById('formSuccess');
+const refIdEl     = document.getElementById('refId');
+const resetBtn    = document.getElementById('resetForm');
+
+projectForm.addEventListener('submit', e => {
+  e.preventDefault();
+
+  if (!projectForm.checkValidity()) {
+    projectForm.reportValidity();
+    return;
+  }
+
+  const ref = 'QG-' + new Date().getFullYear() + '-' +
+              Math.random().toString(36).slice(2, 7).toUpperCase();
+
+  refIdEl.textContent = ref;
+
+  /* --- Example of what a real submission would look like ---
+  const payload = Object.fromEntries(new FormData(projectForm).entries());
+  payload.reference = ref;
+  fetch('/api/projects', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  --------------------------------------------------------- */
+
+  projectForm.style.display = 'none';
+  formSuccess.style.display  = 'block';
+  formSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+resetBtn.addEventListener('click', () => {
+  projectForm.reset();
+  formSuccess.style.display = 'none';
+  projectForm.style.display = 'grid';
+  projectForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+/* ------------------------------------------------------------
+   5. Charts (Chart.js)
+   ------------------------------------------------------------ */
+function initCharts() {
+
+  if (typeof Chart === 'undefined') {
+    document.querySelectorAll('.chart-box').forEach(box => {
+      box.innerHTML = '<div class="chart-fallback" style="display:grid">' +
+        'Chart library could not load. Check your internet connection to view analytics.' +
+        '</div>';
+    });
+    return;
+  }
+
+  /* ---- Global chart defaults ---- */
+  Chart.defaults.color = 'rgba(234,246,236,.72)';
+  Chart.defaults.font.family = "'Outfit', system-ui, sans-serif";
+  Chart.defaults.font.size = 12;
+  Chart.defaults.plugins.legend.labels.usePointStyle = true;
+  Chart.defaults.plugins.legend.labels.boxWidth = 8;
+  Chart.defaults.plugins.legend.labels.boxHeight = 8;
+  Chart.defaults.plugins.legend.labels.padding = 14;
+
+  const GRID  = 'rgba(168,224,99,.11)';
+  const TICKS = { color: 'rgba(159,194,174,.85)' };
+
+  const SECTORS = [
+    'Agriculture',
+    'Climate & Disaster',
+    'Afforestation',
+    'Biotechnology',
+    'Genetic Engineering',
+    'Anti-Deforestation'
+  ];
+  const PALETTE = ['#7ED957','#2ECC71','#38B98C','#5FD3A0','#A8E063','#1E8F6E'];
+
+  /* ---------- 5.1 Doughnut: focus allocation ---------- */
+  new Chart(document.getElementById('chartFocus'), {
+    type: 'doughnut',
+    data: {
+      labels: SECTORS,
+      datasets: [{
+        data: [26, 20, 18, 16, 12, 8],
+        backgroundColor: PALETTE,
+        borderColor: '#04231A',
+        borderWidth: 3,
+        hoverOffset: 10
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: { position: 'bottom' },
+        tooltip: {
+          callbacks: { label: c => `  ${c.label}: ${c.parsed}%` }
+        }
+      }
+    }
+  });
+
+  /* ---------- 5.2 Bar: projects by sector ---------- */
+  new Chart(document.getElementById('chartProjects'), {
+    type: 'bar',
+    data: {
+      labels: SECTORS,
+      datasets: [{
+        label: 'Projects by 2031',
+        data: [420, 260, 310, 180, 120, 140],
+        backgroundColor: PALETTE.map(c => c + 'CC'),
+        hoverBackgroundColor: PALETTE,
+        borderRadius: 8,
+        borderSkipped: false,
+        maxBarThickness: 46
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => `  ${c.parsed.y} projects` } }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { ...TICKS, font: { size: 10 }, maxRotation: 45, minRotation: 0 }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: GRID },
+          ticks: TICKS,
+          border: { display: false }
+        }
+      }
+    }
+  });
+
+  /* ---------- 5.3 Line: growth trajectory (dual axis) ---------- */
+  new Chart(document.getElementById('chartGrowth'), {
+    type: 'line',
+    data: {
+      labels: ['2026', '2027', '2028', '2029', '2030', '2031'],
+      datasets: [
+        {
+          label: 'Projects onboarded',
+          data: [15, 120, 380, 760, 1200, 1700],
+          borderColor: '#7ED957',
+          backgroundColor: 'rgba(126,217,87,.16)',
+          fill: true,
+          tension: .38,
+          borderWidth: 2.5,
+          pointBackgroundColor: '#7ED957',
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          yAxisID: 'y'
+        },
+        {
+          label: 'Hectares restored',
+          data: [0, 5000, 11000, 18000, 22000, 25000],
+          borderColor: '#4FD1C5',
+          backgroundColor: 'rgba(79,209,197,.10)',
+          fill: true,
+          tension: .38,
+          borderWidth: 2.5,
+          borderDash: [6, 5],
+          pointBackgroundColor: '#4FD1C5',
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { position: 'bottom' } },
+      scales: {
+        x: { grid: { display: false }, ticks: TICKS },
+        y: {
+          position: 'left',
+          beginAtZero: true,
+          grid: { color: GRID },
+          ticks: { ...TICKS, callback: v => v >= 1000 ? (v / 1000) + 'k' : v },
+          title: { display: true, text: 'Projects', color: 'rgba(159,194,174,.7)', font: { size: 10 } },
+          border: { display: false }
+        },
+        y1: {
+          position: 'right',
+          beginAtZero: true,
+          grid: { drawOnChartArea: false },
+          ticks: { ...TICKS, callback: v => v >= 1000 ? (v / 1000) + 'k ha' : v },
+          title: { display: true, text: 'Hectares', color: 'rgba(159,194,174,.7)', font: { size: 10 } },
+          border: { display: false }
+        }
+      }
+    }
+  });
+
+  /* ---------- 5.4 Radar: readiness index ---------- */
+  new Chart(document.getElementById('chartRadar'), {
+    type: 'radar',
+    data: {
+      labels: ['Agriculture', 'Climate', 'Afforestation', 'Biotech', 'Genetic Eng.', 'Anti-Deforest.'],
+      datasets: [{
+        label: 'Readiness index',
+        data: [84, 72, 88, 78, 61, 66],
+        borderColor: '#A8E063',
+        backgroundColor: 'rgba(168,224,99,.18)',
+        borderWidth: 2,
+        pointBackgroundColor: '#A8E063',
+        pointBorderColor: '#04231A',
+        pointRadius: 4,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        r: {
+          beginAtZero: true,
+          max: 100,
+          grid: { color: GRID },
+          angleLines: { color: GRID },
+          pointLabels: {
+            color: 'rgba(234,246,236,.82)',
+            font: { size: 10 }
+          },
+          ticks: { display: false }
+        }
+      }
+    }
+  });
+}
+
+/* Init charts once Chart.js is ready */
+if (document.readyState === 'complete') {
+  initCharts();
+} else {
+  window.addEventListener('load', initCharts);
+}
+</script>
+
+</body>
+</html>
